@@ -1,12 +1,14 @@
 package test;
 
 import view.LoginFormView;
-import view.RegisterFormView;
 
 public class Test {
 
   public static void main(String[] args) {
-    new LoginFormView();
-    // new RegisterFormView();
+    try {
+      new LoginFormView();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

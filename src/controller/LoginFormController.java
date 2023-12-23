@@ -2,17 +2,18 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import messages.Message;
+
+import constants.Message;
 import model.Account;
+import utils.DataHandler;
 import view.LoginFormView;
-import view.RegisterFormView;
 
 public class LoginFormController implements ActionListener {
 
-  private RegisterFormView registerFormView;
+  private DataHandler dataHandler;
 
-  public LoginFormController(RegisterFormView registerFormView) {
-    this.registerFormView = registerFormView;
+  public LoginFormController(DataHandler dataHandler) {
+    this.dataHandler = dataHandler;
   }
 
   @Override
@@ -28,7 +29,7 @@ public class LoginFormController implements ActionListener {
       } else {
         Message.IS_LOGIN_SUCCESS();
         Message.IS_WELLCOME(username);
-        System.out.println("Login success: " + registerFormView.accountList.toString());
+        System.out.println("Login success: " + DataHandler.accountList.toString());
       }
     }
   }
@@ -38,7 +39,7 @@ public class LoginFormController implements ActionListener {
   }
 
   private boolean isMatching(String username, String password) {
-    for (Account item : registerFormView.accountList) {
+    for (Account item : DataHandler.accountList) {
       if (item.getUsername().equals(username) && item.getPassword().equals(password)) {
         return true;
       }

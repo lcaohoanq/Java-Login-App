@@ -3,47 +3,26 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import messages.Message;
+import constants.Message;
+import constants.Path;
 import model.Account;
+import utils.DataHandler;
 import view.RegisterFormView;
 
 public class RegisterFormController implements ActionListener {
 
-    private RegisterFormView registerFormView;
+    private DataHandler dataHandler;
 
-    public RegisterFormController(RegisterFormView registerFormView) {
-        this.registerFormView = registerFormView;
+    public RegisterFormController(DataHandler dataHandler) {
+        this.dataHandler = dataHandler;
     }
-
-    // Su dung Map de luu tru account
-    // @Override
-    // public void actionPerformed(ActionEvent e) {
-    // String username = registerFormView.jTextField_Username.getText();
-    // String password = registerFormView.jTextField_Password.getText();
-    // String confirmPassword =
-    // registerFormView.jTextField_ConfirmPassword.getText();
-
-    // if (registerFormView.accountList.containsKey(username)) {
-    // Message.IS_EXISTED_USERNAME();
-    // } else {
-    // if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-    // Message.IS_EMPTY_FIELD();
-    // } else if (!password.equals(confirmPassword)) {
-    // Message.IS_NOT_MATCH_PASSWORD_AND_CONFIRM_PASSWORD();
-    // } else {
-    // registerFormView.accountList.put(username, password);
-    // System.out.println(registerFormView.accountList);
-    // }
-    // }
-
-    // }
 
     // Su dung ArrayList<Account> de luu tru account
     @Override
     public void actionPerformed(ActionEvent e) {
-        String username = registerFormView.jTextField_Username.getText();
-        String password = registerFormView.jTextField_Password.getText();
-        String confirmPassword = registerFormView.jTextField_ConfirmPassword.getText();
+        String username = RegisterFormView.jTextField_Username.getText();
+        String password = RegisterFormView.jTextField_Password.getText();
+        String confirmPassword = RegisterFormView.jTextField_ConfirmPassword.getText();
 
         if ((isEmpty(username, password, confirmPassword))) {
             Message.IS_EMPTY_FIELD();
@@ -53,8 +32,8 @@ public class RegisterFormController implements ActionListener {
             if (isDuplicateUsername(username)) {
                 Message.IS_EXISTED_USERNAME();
             } else {
-                registerFormView.accountList.add(new Account(username, password));
-                registerFormView.initData();
+                DataHandler.accountList.add(new Account(username, password));
+                dataHandler.writeFile(Path.url);
                 Message.IS_REGISTER_SUCCESS();
             }
 
@@ -71,7 +50,7 @@ public class RegisterFormController implements ActionListener {
     }
 
     private boolean isDuplicateUsername(String username) {
-        for (Account item : registerFormView.accountList) {
+        for (Account item : DataHandler.accountList) {
             if (item.getUsername().equals(username)) {
                 return true;
             }

@@ -1,11 +1,5 @@
 package view;
 
-import constants.ColorsHandling;
-import constants.Path;
-import controller.LoginFormController;
-import controller.RegisterFormController;
-import model.Account;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,14 +9,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -34,17 +22,18 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import constants.ColorsHandling;
+import controller.RegisterFormController;
+import model.Account;
+import utils.DataHandler;
+
 public class RegisterFormView extends JFrame {
-    private RegisterFormView registerFormView;
-
-    // public static Map<String, String> accountList = new HashMap<>();
-    public static ArrayList<Account> accountList = new ArrayList<>();
-
     // Components for Login Form
     private JLabel jLabel_Logo = new JLabel("Register", JLabel.CENTER);
     private JLabel jLabel_Username = new JLabel("Username: ");
     private JLabel jLabel_Password = new JLabel("Password: ");
     private JLabel jLabel_ConfirmPassword = new JLabel("Confirm Password: ");
+
     // Text fields and button
     public static JTextField jTextField_Username = new JTextField(10);
     public static JTextField jTextField_Password = new JTextField(10);
@@ -55,11 +44,11 @@ public class RegisterFormView extends JFrame {
     private JButton jButton_OtherOption = new JButton("Already have an account? Sign in here");
 
     // Fonts and dimensions
-    // ! Font nay dat ten chua dung
     Font font_logo = new Font("Dialog", Font.BOLD, 50);
     Font font_text = new Font("Dialog", Font.PLAIN, 18);
     Font font_text_field = new Font("Dialog", Font.PLAIN, 25);
     Font font_button = new Font("Dialog", Font.BOLD, 20);
+
     // Dimension sizeText = new Dimension(100, 30);
     Dimension sizeInputField = new Dimension(50, 10);
     Dimension sizeButton = new Dimension(300, 50);
@@ -74,6 +63,7 @@ public class RegisterFormView extends JFrame {
     EmptyBorder passwordFieldBorder = new EmptyBorder(0, 10, 0, 10);
     EmptyBorder confirmPasswordBorder = new EmptyBorder(50, 0, 50, 0);
     EmptyBorder confirmPasswordFieldBorder = new EmptyBorder(0, 10, 0, 10);
+
     // EmptyBorder dataZoneBorder = new EmptyBorder(150, 20, 150, 20);
     EmptyBorder buttonBorder = new EmptyBorder(30, 0, 20, 0);
     EmptyBorder otherOptionsBorder = new EmptyBorder(0, 0, 15, 0);
@@ -92,6 +82,11 @@ public class RegisterFormView extends JFrame {
     private JPanel jPanel_OtherOptions = new JPanel(); // Panel for other options
     private JPanel jPanel_BottomZone = new JPanel(); // Panel for login button and other options
 
+    // Others
+    private DataHandler dataHandler = new DataHandler();
+    public static ArrayList<Account> accountList = new ArrayList<>();
+    ActionListener ac;
+
     public RegisterFormView() {
         setTitle("Register");
         setSize(520, 680);
@@ -100,43 +95,54 @@ public class RegisterFormView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setVisible(true);
         System.out.println("set up xog ");
         initForm();
-    }
-
-    public void initData() {
-        writeFile(Path.url);
-    }
-
-    private void writeFile(String url) {
-        try {
-            File file = new File(url);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            for (Account item : accountList) {
-                bufferedWriter.write(item.getUsername() + " " + item.getPassword());
-                bufferedWriter.newLine();
-            }
-            bufferedWriter.close();
-
-            // BufferedWriter BufferedWriter = new BufferedWriter(new FileWriter(url));
-            // for (Account item : accountList) {
-            // BufferedWriter.write(item.getUsername() + " " + item.getPassword());
-            // BufferedWriter.newLine();
-            // }
-            // BufferedWriter.close();
-        } catch (Exception e) {
-            System.out.println("Loi write file" + e);
-        }
+        setVisible(true);
     }
 
     private void initForm() {
 
         // Setting up title label
+        setUpTopZone();
+
+        // Setting up username components
+        setUpUsername();
+
+        // Setting up password components
+        setUpPassword();
+
+        // Setting up confirm password components
+        setUpConfirmPassword();
+
+        // Middle zone setup
+        setUpMiddleZone();
+
+        // Bottom zone setup
+        setUpBottomZone();
+
+        // Container setup
+        setUpContainer();
+
+        // Action
+        doAction();
+    }
+
+    private class PressEnter implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            jButton_RegisterButton.doClick();
+        }
+    }
+
+    private class ClickOtherOption implements ActionListener {
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            dispose();
+            new LoginFormView();
+        }
+    }
+
+    private void setUpTopZone() {
         jLabel_Logo.setFont(font_logo);
         // jLabel_Logo.setPreferredSize(sizeText);
         jLabel_Logo.setForeground(ColorsHandling.TEXT_COLOR);
@@ -145,8 +151,9 @@ public class RegisterFormView extends JFrame {
         jPanel_TopZone.setBackground(ColorsHandling.PRIMARY_COLOR);
         jPanel_TopZone.setBorder(logoBorder);
         jPanel_TopZone.add(jLabel_Logo, BorderLayout.CENTER);
+    }
 
-        // Setting up username components
+    private void setUpUsername() {
         jLabel_Username.setFont(font_text);
         jLabel_Username.setBorder(jLabelBorder);
         // jLabel_Username.setPreferredSize(sizeText);
@@ -161,8 +168,9 @@ public class RegisterFormView extends JFrame {
         jPanel_Username.setLayout(new BoxLayout(jPanel_Username, BoxLayout.Y_AXIS));
         jPanel_Username.add(jLabel_Username);
         jPanel_Username.add(jTextField_Username);
+    }
 
-        // Setting up password components
+    private void setUpPassword() {
         jLabel_Password.setFont(font_text);
         jLabel_Password.setBorder(jLabelBorder);
         // jLabel_Password.setPreferredSize(sizeText);
@@ -178,8 +186,9 @@ public class RegisterFormView extends JFrame {
         jPanel_Password.setLayout(new BoxLayout(jPanel_Password, BoxLayout.Y_AXIS));
         jPanel_Password.add(jLabel_Password);
         jPanel_Password.add(jTextField_Password);
+    }
 
-        // Setting up confirm password components
+    private void setUpConfirmPassword() {
         jLabel_ConfirmPassword.setFont(font_text);
         jLabel_ConfirmPassword.setBorder(jLabelBorder);
         // jLabel_ConfirmPassword.setPreferredSize(sizeText);
@@ -195,7 +204,9 @@ public class RegisterFormView extends JFrame {
         jPanel_ConfirmPassword.setLayout(new BoxLayout(jPanel_ConfirmPassword, BoxLayout.Y_AXIS));
         jPanel_ConfirmPassword.add(jLabel_ConfirmPassword);
         jPanel_ConfirmPassword.add(jTextField_ConfirmPassword);
-        // Middle zone setup
+    }
+
+    private void setUpMiddleZone() {
         jPanel_MiddleZone.setLayout(new BorderLayout());
         // jPanel_MiddleZone.setBorder(dataZoneBorder);
         jPanel_MiddleZone.setBackground(ColorsHandling.PRIMARY_COLOR);
@@ -203,8 +214,9 @@ public class RegisterFormView extends JFrame {
         jPanel_MiddleZone.add(jPanel_Username);
         jPanel_MiddleZone.add(jPanel_Password);
         jPanel_MiddleZone.add(jPanel_ConfirmPassword);
+    }
 
-        // Button zone setup
+    private void setUpBottomZone() {
         jButton_RegisterButton.setPreferredSize(sizeButton);
         jButton_RegisterButton.setFont(font_button);
         jButton_RegisterButton.setForeground(ColorsHandling.PRIMARY_COLOR);
@@ -227,8 +239,9 @@ public class RegisterFormView extends JFrame {
         jPanel_OtherOptions.setBorder(otherOptionsBorder);
         jPanel_BottomZone.add(jPanel_Button, BorderLayout.NORTH);
         jPanel_BottomZone.add(jPanel_OtherOptions, BorderLayout.SOUTH);
+    }
 
-        // Container setup
+    private void setUpContainer() {
         jPanel_container.setLayout(new BorderLayout());
         jPanel_container.setBackground(ColorsHandling.PRIMARY_COLOR);
         jPanel_container.setBorder(containerBorder);
@@ -237,17 +250,13 @@ public class RegisterFormView extends JFrame {
         jPanel_container.add(jPanel_BottomZone, BorderLayout.SOUTH);
 
         this.add(jPanel_container);
+    }
 
-        // Action
-        ActionListener ac = new RegisterFormController(this);
+    private void doAction() {
+        ac = new RegisterFormController(dataHandler);
 
         jButton_RegisterButton.addActionListener(ac);
-        jButton_OtherOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new LoginFormView();
-            }
-        });
+        jTextField_ConfirmPassword.addActionListener(new PressEnter());
+        jButton_OtherOption.addActionListener(new ClickOtherOption());
     }
 }

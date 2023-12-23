@@ -2,6 +2,8 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+resources/login_img.png
+resources/register_img.png
 
 ### Eclipse ###
 .apt_generated

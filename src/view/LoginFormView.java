@@ -1,11 +1,5 @@
 package view;
 
-import constants.ColorsHandling;
-import constants.Path;
-import controller.LoginFormController;
-import javafx.event.ActionEvent;
-import model.Account;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,12 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.net.URL;
-import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,10 +20,12 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-public class LoginFormView extends JFrame {
-  private RegisterFormView registerFormView;
-  private LoginFormView loginFormView;
+import constants.ColorsHandling;
+import constants.Path;
+import controller.LoginFormController;
+import utils.DataHandler;
 
+public class LoginFormView extends JFrame {
   // Components for Login Form
   private JLabel jLabel_Logo = new JLabel("Login", JLabel.CENTER);
   private JLabel jLabel_Username = new JLabel("Username: ");
@@ -49,7 +40,6 @@ public class LoginFormView extends JFrame {
   private JButton jButton_OtherOption = new JButton("Do not have an account? Sign up here");
 
   // Fonts and dimensions
-  // ! Font nay dat ten chua dung
   Font font_logo = new Font("Dialog", Font.BOLD, 50);
   Font font_text_jLabel = new Font("Dialog", Font.PLAIN, 20);
   Font font_text_JTextField = new Font("Dialog", Font.PLAIN, 35);
@@ -83,6 +73,10 @@ public class LoginFormView extends JFrame {
   private JPanel jPanel_OtherOptions = new JPanel(); // Panel for other options
   private JPanel jPanel_BottomZone = new JPanel(); // Panel for login button and other options
 
+  // Others
+  private DataHandler dataHandler = new DataHandler();
+  ActionListener ac;
+
   public LoginFormView() {
     setTitle("Login");
     setSize(520, 680);
@@ -91,43 +85,55 @@ public class LoginFormView extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLocationRelativeTo(null);
     setResizable(false);
-    setVisible(true);
-    initData(); // load data account
+
+    System.out.println("Truoc data Handler");
+    dataHandler.readFile(Path.url); // load data account
     initForm();
-  }
-
-  private void initData() {
-    readFile(Path.url);
-  }
-
-  private boolean readFile(String url) {
-    try {
-      FileReader fr = new FileReader(url);
-      BufferedReader br = new BufferedReader(fr);
-      String line = "";
-      while ((line = br.readLine()) != null) {
-        StringTokenizer stk = new StringTokenizer(line, " ");
-        String username = stk.nextToken();
-        String password = stk.nextToken();
-        registerFormView.accountList.add(new Account(username, password));
-
-        // String[] arr = line.split(" ");
-        // String username = arr[0];
-        // String password = arr[1];
-        // registerFormView.accountList.add(new Account(username, password));
-      }
-      br.close();
-      fr.close();
-      return true;
-    } catch (Exception e) {
-      System.out.println("Loi doc file: " + e);
-    }
-    return false;
+    setVisible(true);
   }
 
   private void initForm() {
 
     // Setting up title label
+    setUpTopZone();
+
+    // Setting up username components
+    setUpUsername();
+
+    // Setting up password components
+    setUpPassword();
+
+    // Middle zone setup (combining username and password)
+    setUpMiddleZone();
+
+    // Bottom zone setup
+    setUpBottomZone();
+
+    // Container setup
+    setUpContainer();
+
+    // Action
+    doAction();
+  }
+
+  private class ClickOtherOption implements ActionListener {
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+      dispose();
+      new RegisterFormView();
+    }
+  }
+
+  private class PressEnter implements ActionListener {
+
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+      jButton_LoginButton.doClick();
+    }
+
+  }
+
+  private void setUpTopZone() {
     jLabel_Logo.setFont(font_logo);
     // jLabel_Logo.setPreferredSize(sizeText);
     jLabel_Logo.setForeground(ColorsHandling.TEXT_COLOR);
@@ -136,8 +142,9 @@ public class LoginFormView extends JFrame {
     jPanel_TopZone.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_TopZone.setBorder(logoBorder);
     jPanel_TopZone.add(jLabel_Logo, BorderLayout.CENTER);
+  }
 
-    // Setting up username components
+  private void setUpUsername() {
     jLabel_Username.setFont(font_text_jLabel);
     // jLabel_Username.setPreferredSize(sizeText);
     jLabel_Username.setBorder(jLabelBorder);
@@ -152,8 +159,9 @@ public class LoginFormView extends JFrame {
     jPanel_Username.setLayout(new BoxLayout(jPanel_Username, BoxLayout.Y_AXIS));
     jPanel_Username.add(jLabel_Username);
     jPanel_Username.add(jTextField_Username);
+  }
 
-    // Setting up password components
+  private void setUpPassword() {
     jLabel_Password.setFont(font_text_jLabel);
     jLabel_Password.setBorder(jLabelBorder);
     // jLabel_Password.setPreferredSize(sizeText);
@@ -170,16 +178,18 @@ public class LoginFormView extends JFrame {
     jPanel_Password.setLayout(new BoxLayout(jPanel_Password, BoxLayout.Y_AXIS));
     jPanel_Password.add(jLabel_Password);
     jPanel_Password.add(jTextField_Password);
+  }
 
-    // Middle zone setup
+  private void setUpMiddleZone() {
     jPanel_MiddleZone.setLayout(new BorderLayout());
     // jPanel_MiddleZone.setBorder(dataZoneBorder);
     jPanel_MiddleZone.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_MiddleZone.setLayout(new GridLayout(2, 1));
     jPanel_MiddleZone.add(jPanel_Username);
     jPanel_MiddleZone.add(jPanel_Password);
+  }
 
-    // Button zone setup
+  private void setUpBottomZone() {
     jButton_LoginButton.setPreferredSize(sizeButton);
     jButton_LoginButton.setFont(font_button);
     jButton_LoginButton.setForeground(ColorsHandling.PRIMARY_COLOR);
@@ -202,8 +212,9 @@ public class LoginFormView extends JFrame {
     jPanel_OtherOptions.setBorder(otherOptionsBorder);
     jPanel_BottomZone.add(jPanel_Button, BorderLayout.NORTH);
     jPanel_BottomZone.add(jPanel_OtherOptions, BorderLayout.SOUTH);
+  }
 
-    // Container setup
+  private void setUpContainer() {
     jPanel_container.setLayout(new BorderLayout());
     jPanel_container.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_container.setBorder(containerBorder);
@@ -212,29 +223,13 @@ public class LoginFormView extends JFrame {
     jPanel_container.add(jPanel_BottomZone, BorderLayout.SOUTH);
 
     this.add(jPanel_container);
+  }
 
-    ActionListener ac = new LoginFormController(registerFormView);
+  private void doAction() {
+    ac = new LoginFormController(dataHandler);
 
     jButton_LoginButton.addActionListener(ac);
     jButton_OtherOption.addActionListener(new ClickOtherOption());
     jTextField_Password.addActionListener(new PressEnter());
-
-  }
-
-  private class ClickOtherOption implements ActionListener {
-    @Override
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-      dispose();
-      new RegisterFormView();
-    }
-  }
-
-  private class PressEnter implements ActionListener {
-
-    @Override
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-      jButton_LoginButton.doClick();
-    }
-
   }
 }
