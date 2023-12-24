@@ -41,13 +41,15 @@ public class RegisterFormView extends JFrame {
     private JButton jButton_RegisterButton = new JButton("Register");
 
     // Additional label for other options
-    private JButton jButton_OtherOption = new JButton("Already have an account? Sign in here");
+    private JLabel jLabel_OtherOptions_Label = new JLabel("Already have an account?");
+    private JButton jButton_OthersOption_Button = new JButton("Sign in here");
 
     // Fonts and dimensions
     Font font_logo = new Font("Dialog", Font.BOLD, 50);
     Font font_text = new Font("Dialog", Font.PLAIN, 18);
     Font font_text_field = new Font("Dialog", Font.PLAIN, 25);
     Font font_button = new Font("Dialog", Font.BOLD, 20);
+    Font font_otherOptions = new Font("Dialog", Font.PLAIN, 15);
 
     // Dimension sizeText = new Dimension(100, 30);
     Dimension sizeInputField = new Dimension(50, 10);
@@ -222,11 +224,17 @@ public class RegisterFormView extends JFrame {
         jButton_RegisterButton.setForeground(ColorsHandling.PRIMARY_COLOR);
         jButton_RegisterButton.setBackground(ColorsHandling.TEXT_COLOR);
         // jButton_LoginButton.setBorder(border);
-        jButton_OtherOption.setBorder(null);
+
+        jLabel_OtherOptions_Label.setFont(font_otherOptions);
+        jLabel_OtherOptions_Label.setForeground(ColorsHandling.TEXT_COLOR);
+        jLabel_OtherOptions_Label.setBackground(ColorsHandling.PRIMARY_COLOR);
+
+        jButton_OthersOption_Button.setFont(font_otherOptions);
+        jButton_OthersOption_Button.setBorder(null);
         // jButton_OtherOption.setFocusPainted(false); //tat di trang thai hover
-        jButton_OtherOption.setRolloverEnabled(false);
-        jButton_OtherOption.setForeground(ColorsHandling.TEXT_COLOR);
-        jButton_OtherOption.setBackground(ColorsHandling.PRIMARY_COLOR);
+        jButton_OthersOption_Button.setRolloverEnabled(false);
+        jButton_OthersOption_Button.setForeground(ColorsHandling.OTHER_OPTIONS);
+        jButton_OthersOption_Button.setBackground(ColorsHandling.PRIMARY_COLOR);
         jPanel_BottomZone.setBackground(ColorsHandling.PRIMARY_COLOR);
         // jPanel_BottomZone.setLayout(new BoxLayout(jPanel_BottomZone,
         // BoxLayout.Y_AXIS));
@@ -234,7 +242,8 @@ public class RegisterFormView extends JFrame {
         jPanel_Button.add(jButton_RegisterButton);
         jPanel_Button.setBackground(ColorsHandling.PRIMARY_COLOR);
         jPanel_Button.setBorder(buttonBorder);
-        jPanel_OtherOptions.add(jButton_OtherOption);
+        jPanel_OtherOptions.add(jLabel_OtherOptions_Label);
+        jPanel_OtherOptions.add(jButton_OthersOption_Button);
         jPanel_OtherOptions.setBackground(ColorsHandling.PRIMARY_COLOR);
         jPanel_OtherOptions.setBorder(otherOptionsBorder);
         jPanel_BottomZone.add(jPanel_Button, BorderLayout.NORTH);
@@ -257,6 +266,6 @@ public class RegisterFormView extends JFrame {
 
         jButton_RegisterButton.addActionListener(ac);
         jTextField_ConfirmPassword.addActionListener(new PressEnter());
-        jButton_OtherOption.addActionListener(new ClickOtherOption());
+        jButton_OthersOption_Button.addActionListener(new ClickOtherOption());
     }
 }

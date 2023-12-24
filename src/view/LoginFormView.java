@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -37,13 +38,15 @@ public class LoginFormView extends JFrame {
   private JButton jButton_LoginButton = new JButton("Login");
 
   // Additional label for other options
-  private JButton jButton_OtherOption = new JButton("Do not have an account? Sign up here");
+  private JLabel jLabel_OtherOptions_Label = new JLabel("Do not have an account?");
+  private JButton jButton_OtherOptions_Button = new JButton("Sign up here");
 
   // Fonts and dimensions
   Font font_logo = new Font("Dialog", Font.BOLD, 50);
   Font font_text_jLabel = new Font("Dialog", Font.PLAIN, 20);
   Font font_text_JTextField = new Font("Dialog", Font.PLAIN, 35);
   Font font_button = new Font("Dialog", Font.BOLD, 20);
+  Font font_otherOptions = new Font("Dialog", Font.PLAIN, 15);
   // Dimension sizeText = new Dimension(100, 30);
   Dimension sizeInputField = new Dimension(50, 10);
   Dimension sizeButton = new Dimension(300, 50);
@@ -70,7 +73,7 @@ public class LoginFormView extends JFrame {
   private JPanel jPanel_Password = new JPanel(); // Panel for password components
   private JPanel jPanel_MiddleZone = new JPanel(); // Middle zone combining username and password
   private JPanel jPanel_Button = new JPanel(); // Panel for login button
-  private JPanel jPanel_OtherOptions = new JPanel(); // Panel for other options
+  private JPanel jPanel_OtherOptions = new JPanel(new FlowLayout()); // Panel for other options
   private JPanel jPanel_BottomZone = new JPanel(); // Panel for login button and other options
 
   // Others
@@ -195,11 +198,15 @@ public class LoginFormView extends JFrame {
     jButton_LoginButton.setForeground(ColorsHandling.PRIMARY_COLOR);
     jButton_LoginButton.setBackground(ColorsHandling.TEXT_COLOR);
     // jButton_LoginButton.setBorder(border);
-    jButton_OtherOption.setBorder(null);
-    // jButton_OtherOption.setFocusPainted(false); //tat di trang thai hover
-    jButton_OtherOption.setRolloverEnabled(false);
-    jButton_OtherOption.setForeground(ColorsHandling.TEXT_COLOR);
-    jButton_OtherOption.setBackground(ColorsHandling.PRIMARY_COLOR);
+    jLabel_OtherOptions_Label.setFont(font_otherOptions);
+    jLabel_OtherOptions_Label.setBackground(ColorsHandling.PRIMARY_COLOR);
+    jLabel_OtherOptions_Label.setForeground(ColorsHandling.TEXT_COLOR);
+
+    jButton_OtherOptions_Button.setFont(font_otherOptions);
+    jButton_OtherOptions_Button.setBorder(null);
+    jButton_OtherOptions_Button.setRolloverEnabled(false);
+    jButton_OtherOptions_Button.setForeground(ColorsHandling.OTHER_OPTIONS); //
+    jButton_OtherOptions_Button.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_BottomZone.setBackground(ColorsHandling.PRIMARY_COLOR);
     // jPanel_BottomZone.setLayout(new BoxLayout(jPanel_BottomZone,
     // BoxLayout.Y_AXIS));
@@ -207,7 +214,8 @@ public class LoginFormView extends JFrame {
     jPanel_Button.add(jButton_LoginButton);
     jPanel_Button.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_Button.setBorder(buttonBorder);
-    jPanel_OtherOptions.add(jButton_OtherOption);
+    jPanel_OtherOptions.add(jLabel_OtherOptions_Label);
+    jPanel_OtherOptions.add(jButton_OtherOptions_Button);
     jPanel_OtherOptions.setBackground(ColorsHandling.PRIMARY_COLOR);
     jPanel_OtherOptions.setBorder(otherOptionsBorder);
     jPanel_BottomZone.add(jPanel_Button, BorderLayout.NORTH);
@@ -229,7 +237,7 @@ public class LoginFormView extends JFrame {
     ac = new LoginFormController(dataHandler);
 
     jButton_LoginButton.addActionListener(ac);
-    jButton_OtherOption.addActionListener(new ClickOtherOption());
+    jButton_OtherOptions_Button.addActionListener(new ClickOtherOption());
     jTextField_Password.addActionListener(new PressEnter());
   }
 }

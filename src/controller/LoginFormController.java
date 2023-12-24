@@ -29,7 +29,6 @@ public class LoginFormController implements ActionListener {
       } else {
         Message.IS_LOGIN_SUCCESS();
         Message.IS_WELLCOME(username);
-        System.out.println("Login success: " + DataHandler.accountList.toString());
       }
     }
   }
